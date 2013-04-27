@@ -10,3 +10,5 @@ $Parser = new \CatDocXls\Parser;
 $result = $Parser->parseToArray('path/to/file.xls');
 print_r($result);
 ```
+
+See more examples in [test/CatDocXls/Test/ParserTest.php](ParserTest.php)
