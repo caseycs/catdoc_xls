@@ -129,8 +129,8 @@ class Parser
     private function getXlsx2CsvExecutable()
     {
         $try_files = array(
-            __DIR__ . '/../../../../../vendor/bin/xlsx2csv.py',//from 3th-party projects as dependency
-            __DIR__ . '/../../vendor/bin/xlsx2csv.py',//from package repo
+            __DIR__ . '/../../../../dilshod/xlsx2csv/xlsx2csv.py',//from 3th-party projects as dependency
+            __DIR__ . '/../../vendor/dilshod/xlsx2csv/xlsx2csv.py',//from package repo
         );
         foreach ($try_files as $try_file) {
             if (is_file($try_file) && is_executable($try_file)) {
