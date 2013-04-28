@@ -59,7 +59,7 @@ class Parser
             throw new Exception('file unreadable - ' . $path);
         }
 
-        $cmd = realpath(__DIR__ . '/../../vendor/dilshod/xlsx2csv/xlsx2csv.py') . " " .
+        $cmd = $this->getXlsx2CsvExecutable() . " " .
             "--ignoreempty " .
             "--dateformat '%Y-%m-%d %H:%M:%S' " .
             "--delimiter ';' " .
@@ -124,5 +124,23 @@ class Parser
         }
 
         return $delimiter;
+    }
+
+    private function getXlsx2CsvExecutable()
+    {
+        $try_files = array(
+            __DIR__ . '/../../../../../vendor/bin/xlsx2csv.py',//from 3th-party projects as dependency
+            __DIR__ . '/../../vendor/bin/xlsx2csv.py',//from package repo
+        );
+        foreach ($try_files as $try_file) {
+            if (is_file($try_file) && is_executable($try_file)) {
+                $executable = $try_file;
+                break;
+            }
+        }
+        if (!isset($executable)) {
+            throw new \Exception('xlsx2csv executable not found');
+        }
+        return realpath($executable);
     }
 }

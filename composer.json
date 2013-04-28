@@ -9,7 +9,8 @@
                     "url": "https://github.com/dilshod/xlsx2csv.git",
                     "type": "git",
                     "reference": "fa44ba6f6378446e84c7363906984c0a5b49b7e5"
-                }
+                },
+                "bin": ["xlsx2csv.py"]
             }
         }
     ],
