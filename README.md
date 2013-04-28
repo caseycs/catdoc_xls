@@ -19,6 +19,6 @@ See more examples in [ParserTest.php](test/CatDocXls/Test/ParserTest.php)
 
 ##Known issues
 
-* Empty lines are ignored - this is hardcoded in xls2csv, and --ignoreempty is always passed to xlsx2csv
+* Empty lines are ignored - this is hardcoded in xls2csv, and `--ignoreempty` is always passed to xlsx2csv
 * Empty sheets are also ignored
 * Xls2cvs always output date and datetime fields as days count, so is is passed as is - you should convert them manually, see http://www.linuxquestions.org/questions/red-hat-31/xls2csv-doesn-t-work-with-excel-date-format-703348/
