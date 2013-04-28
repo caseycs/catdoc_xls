@@ -5,19 +5,23 @@ class Parser
 {
     private $sheet_delimiter_default = '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~';
 
-    public function parseToArray($xls_path, $encoding = 'utf-8', $sheet_delimiter = null)
+    public function xls($path, $sheet_delimiter = null)
     {
         $sheet_delimiter = $this->processPageDelimiter($sheet_delimiter);
 
-        if (!is_file($xls_path)) {
-            throw new Exception('file not found - ' . $xls_path);
+        if (!is_file($path)) {
+            throw new Exception('file not found - ' . $path);
         }
 
-        if (!is_readable($xls_path)) {
-            throw new Exception('file unreadable - ' . $xls_path);
+        if (!is_readable($path)) {
+            throw new Exception('file unreadable - ' . $path);
         }
 
-        $cmd = "xls2csv -d " . $encoding . " -c ';' -b \"" . $sheet_delimiter . "\n\" " . $xls_path;
+        $cmd = "xls2csv " .
+            "-d utf-8 " .
+            "-c ';' " .
+            "-b \"" . $sheet_delimiter . "\n\" " .
+            $path . " 2>&1";
         $output = array();
         $exit_code = null;
         exec($cmd, $output, $exit_code);
@@ -34,6 +38,57 @@ class Parser
 
         //process lines
         foreach ($sheets as &$sheet) {
+            foreach ($sheet as &$line) {
+                $line = str_getcsv($line, ';');
+            }
+        }
+
+        return $sheets;
+    }
+
+    public function xlsx($path, $sheet_delimiter = null)
+    {
+        $sheet_to_process = 0;
+        $sheet_delimiter = $this->processPageDelimiter($sheet_delimiter);
+
+        if (!is_file($path)) {
+            throw new Exception('file not found - ' . $path);
+        }
+
+        if (!is_readable($path)) {
+            throw new Exception('file unreadable - ' . $path);
+        }
+
+        $cmd = __DIR__ . "/../../vendor/bin/xlsx2csv.py " .
+            "--ignoreempty " .
+            "--dateformat '%Y-%m-%d %H:%M:%S' " .
+            "--delimiter ';' " .
+            "--sheet " . (string)$sheet_to_process . " " .
+            "--sheetdelimiter \"" . $sheet_delimiter . "\n\" " .
+            $path . " 2>&1";
+        $output = array();
+        $exit_code = null;
+        exec($cmd, $output, $exit_code);
+
+        if ($exit_code !== 0) {
+            throw new Exception('xlsx2csv failed: ' . $cmd . ', exit code ' . $exit_code . ', output: ' . join("\n", $output));
+        }
+
+        if ($output === '') {
+            throw new Exception('xlsx2csv output empty');
+        }
+
+        array_shift($output); //remove first sheet delimiter
+
+        $sheets = $this->divideSheets($output, $sheet_delimiter);
+
+        //process lines
+        foreach ($sheets as &$sheet) {
+            if (count($sheet) === 1) {//ignoring empty sheet, same as xls2csv
+                array_shift($sheets);
+                continue;
+            }
+            array_shift($sheet); //remove sheet title, same as xls2csv
             foreach ($sheet as &$line) {
                 $line = str_getcsv($line, ';');
             }

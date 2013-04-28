@@ -1,4 +1,19 @@
 {
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "dilshod/xlsx2csv",
+                "version": "1.0.0",
+                "source": {
+                    "url": "https://github.com/dilshod/xlsx2csv.git",
+                    "type": "git",
+                    "reference": "fa44ba6f6378446e84c7363906984c0a5b49b7e5"
+                },
+                "bin": ["xlsx2csv.py"]
+            }
+        }
+    ],
     "name": "caseycs/catdoc-xls",
     "type": "library",
     "description": "PHP wrapper on catdoc util - xls files parser",
@@ -12,7 +27,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "dilshod/xlsx2csv": "1.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*"
@@ -21,3 +37,4 @@
         "psr-0": { "CatDocXls": "src/" }
     }
 }
+

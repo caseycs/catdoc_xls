@@ -1,14 +1,24 @@
 #catdoc_xls
 [![Build Status](https://travis-ci.org/caseycs/catdoc_xls.png?branch=master)](https://travis-ci.org/caseycs/catdoc_xls)
 
-PHP wrapper on [catdoc](https://github.com/petewarden/catdoc) util - xls files parser
+Excel files parser (xls/xlsx), wrapper on [catdoc](https://github.com/petewarden/catdoc) and [xlsx2csv](https://github.com/dilshod/xlsx2csv).
 
-Usage example:
+##Usage example:
 
 ```php
 $Parser = new \CatDocXls\Parser;
-$result = $Parser->parseToArray('path/to/file.xls');
+$result = $Parser->xls('path/to/file.xls');
+print_r($result);
+
+$Parser = new \CatDocXls\Parser;
+$result = $Parser->xlsx('path/to/file.xlsx');
 print_r($result);
 ```
 
 See more examples in [ParserTest.php](test/CatDocXls/Test/ParserTest.php)
+
+##Known issues
+
+* Empty lines are ignored - this is hardcoded in xls2csv, and --ignoreempty is always passed to xlsx2csv
+* Empty sheets are also ignored
+* Xls2cvs always output date and datetime fields as days count, so is is passed as is - you should convert them manually, see http://www.linuxquestions.org/questions/red-hat-31/xls2csv-doesn-t-work-with-excel-date-format-703348/
