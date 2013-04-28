@@ -1,7 +1,7 @@
 #catdoc_xls
 [![Build Status](https://travis-ci.org/caseycs/catdoc_xls.png?branch=master)](https://travis-ci.org/caseycs/catdoc_xls)
 
-Excel files parser (xls/xlsx), wrapper on [catdoc](https://github.com/petewarden/catdoc) and [xlsx2csv](https://github.com/dilshod/xlsx2csv).
+Excel files to PHP array convertor (xls/xlsx), wrapper on [catdoc](https://github.com/petewarden/catdoc) and [xlsx2csv](https://github.com/dilshod/xlsx2csv).
 
 ##Usage example:
 
