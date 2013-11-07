@@ -35,13 +35,7 @@ class Parser
         }
 
         $sheets = $this->divideSheets($output, $sheet_delimiter);
-
-        //process lines
-        foreach ($sheets as &$sheet) {
-            foreach ($sheet as &$line) {
-                $line = str_getcsv($line, ';');
-            }
-        }
+        $sheets = array_map(array($this, 'csvLinesToArray'), $sheets);
 
         return $sheets;
     }
@@ -68,6 +62,7 @@ class Parser
             $path . " 2>&1";
         $output = array();
         $exit_code = null;
+
         exec($cmd, $output, $exit_code);
 
         if ($exit_code !== 0) {
@@ -89,9 +84,7 @@ class Parser
                 continue;
             }
             array_shift($sheet); //remove sheet title, same as xls2csv
-            foreach ($sheet as &$line) {
-                $line = str_getcsv($line, ';');
-            }
+            $sheet = $this->csvLinesToArray($sheet);
         }
 
         return $sheets;
@@ -142,5 +135,23 @@ class Parser
             throw new \Exception('xlsx2csv executable not found');
         }
         return realpath($executable);
+    }
+
+    private function csvLinesToArray(array $csv_lines)
+    {
+        $result = array();
+
+        //for correct handling multiline string values with fgetcsv we should pass csv through temporary file
+        $handle = tmpfile();
+        fwrite($handle, join(PHP_EOL, $csv_lines));
+        fseek($handle, 0);
+
+        while (($data = fgetcsv($handle, null, ';')) !== false) {
+            $result[] = $data;
+        }
+
+        fclose($handle);
+
+        return $result;
     }
 }

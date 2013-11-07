@@ -14,18 +14,27 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             array('quotes', array(array(array('"double quoted"', "'single quoted'")))),
             array('semicolon', array(array(array('field with ; semicolon')))),
             array('empty_line', array(array(array('line 1'), array('line 3')))),
+            array('multiline', array(array(array("line1: line 1\nLine2: line2")))),
         );
     }
 
     /**
      * @dataProvider provider_parse_common
      */
-    public function test_parse_common($filename, array $expected)
+    public function test_parse_common_xls($filename, array $expected)
     {
         $Parser = new \CatDocXls\Parser;
 
         $result = $Parser->xls(__DIR__ . '/../../fixture/' . $filename . '.xls');
         $this->assertEquals($expected, $result, 'xls fail');
+    }
+
+    /**
+     * @dataProvider provider_parse_common
+     */
+    public function test_parse_common_xlsx($filename, array $expected)
+    {
+        $Parser = new \CatDocXls\Parser;
 
         $result = $Parser->xlsx(__DIR__ . '/../../fixture/' . $filename . '.xlsx');
         $this->assertEquals($expected, $result, 'xlsx fail');
