@@ -7,15 +7,9 @@ class Parser
 
     public function xls($path, $sheet_delimiter = null)
     {
+        $this->checkFile($path);
+
         $sheet_delimiter = $this->processPageDelimiter($sheet_delimiter);
-
-        if (!is_file($path)) {
-            throw new Exception('file not found - ' . $path);
-        }
-
-        if (!is_readable($path)) {
-            throw new Exception('file unreadable - ' . $path);
-        }
 
         $cmd = "xls2csv " .
             "-d utf-8 " .
@@ -40,24 +34,63 @@ class Parser
         return $sheets;
     }
 
+    public function xls2($path, $sheet)
+    {
+        $this->checkFile($path);
+
+        $temp_file = tempnam(sys_get_temp_dir(), 'xls2csv_py');
+
+        $cmd = $this->getComposerExecutable('JEANNENOTStephane/xls2csv/xls2csv.0.4.py') . " " .
+            "--input {$path} " .
+            "--output {$temp_file} " .
+            "--sheet {$sheet} " .
+            "--enclose-text " .
+            " 2>&1";
+
+        $output = array();
+        $exit_code = null;
+
+        exec($cmd, $output, $exit_code);
+
+        if ($exit_code !== 0) {
+            unlink($temp_file);
+            throw new Exception('xls2csv.0.4.py failed: ' . $cmd . ', exit code ' . $exit_code . ', output: ' . join("\n", $output));
+        }
+
+        if ($output === '') {
+            unlink($temp_file);
+            throw new Exception('xls2csv.0.4.py output empty');
+        }
+
+        $result = array();
+
+        $handle = fopen($temp_file, 'r');
+        while (($data = fgetcsv($handle, null, ';')) !== false) {
+//            print_r($data);
+            if ($data === array('')) continue; //ignoring empty lines, same all all other
+            $result[] = $data;
+        }
+        fclose($handle);
+
+//        var_dump(file_get_contents($temp_file));
+//        print_r($result);
+
+        unlink($temp_file);
+
+        return $result;
+    }
+
     public function xlsx($path, $sheet_delimiter = null)
     {
-        $sheet_to_process = 0;
+        $this->checkFile($path);
+
         $sheet_delimiter = $this->processPageDelimiter($sheet_delimiter);
 
-        if (!is_file($path)) {
-            throw new Exception('file not found - ' . $path);
-        }
-
-        if (!is_readable($path)) {
-            throw new Exception('file unreadable - ' . $path);
-        }
-
-        $cmd = $this->getXlsx2CsvExecutable() . " " .
+        $cmd = $this->getComposerExecutable('dilshod/xlsx2csv/xlsx2csv.py') . " " .
             "--ignoreempty " .
             "--dateformat '%Y-%m-%d %H:%M:%S' " .
             "--delimiter ';' " .
-            "--sheet " . (string)$sheet_to_process . " " .
+            "--sheet 0 " .
             "--sheetdelimiter \"" . $sheet_delimiter . "\n\" " .
             $path . " 2>&1";
         $output = array();
@@ -119,11 +152,11 @@ class Parser
         return $delimiter;
     }
 
-    private function getXlsx2CsvExecutable()
+    private function getComposerExecutable($relative_path)
     {
         $try_files = array(
-            __DIR__ . '/../../../../dilshod/xlsx2csv/xlsx2csv.py',//from 3th-party projects as dependency
-            __DIR__ . '/../../vendor/dilshod/xlsx2csv/xlsx2csv.py',//from package repo
+            __DIR__ . '/../../../../' . $relative_path,//from 3th-party projects as dependency
+            __DIR__ . '/../../vendor/' . $relative_path,//from package repo
         );
         foreach ($try_files as $try_file) {
             if (is_file($try_file) && is_executable($try_file)) {
@@ -132,7 +165,7 @@ class Parser
             }
         }
         if (!isset($executable)) {
-            throw new \Exception('xlsx2csv executable not found');
+            throw new Exception("executable not found {$relative_path}");
         }
         return realpath($executable);
     }
@@ -153,5 +186,16 @@ class Parser
         fclose($handle);
 
         return $result;
+    }
+
+    private function checkFile($path)
+    {
+        if (!is_file($path)) {
+            throw new Exception('file not found - ' . $path);
+        }
+
+        if (!is_readable($path)) {
+            throw new Exception('file unreadable - ' . $path);
+        }
     }
 }

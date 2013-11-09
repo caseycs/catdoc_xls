@@ -1,13 +1,19 @@
 #catdoc_xls
 [![Build Status](https://travis-ci.org/caseycs/catdoc_xls.png?branch=master)](https://travis-ci.org/caseycs/catdoc_xls)
 
-Excel files to PHP array convertor (xls/xlsx), wrapper on [catdoc](https://github.com/petewarden/catdoc) and [xlsx2csv](https://github.com/dilshod/xlsx2csv).
+Excel files to PHP array convertor (xls/xlsx), wrapper on [catdoc](https://github.com/petewarden/catdoc),
+[xls2csv](https://pypi.python.org/pypi/xls2csv) (with few modifications) and [xlsx2csv](https://github.com/dilshod/xlsx2csv).
 
 ##Usage example:
 
 ```php
 $Parser = new \CatDocXls\Parser;
 $result = $Parser->xls('path/to/file.xls');
+print_r($result);
+
+//some xsl files are not parsed via xls2csv binary correct, so you can try python script
+$Parser = new \CatDocXls\Parser;
+$result = $Parser->xls2('path/to/file.xls', 0);
 print_r($result);
 
 $Parser = new \CatDocXls\Parser;
