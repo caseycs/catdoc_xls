@@ -34,7 +34,7 @@ class Parser
         return $sheets;
     }
 
-    public function xls2($path, $sheet)
+    public function xls2($path, $sheet, $column_count = null)
     {
         $this->checkFile($path);
 
@@ -66,14 +66,13 @@ class Parser
 
         $handle = fopen($temp_file, 'r');
         while (($data = fgetcsv($handle, null, ';')) !== false) {
-//            print_r($data);
             if ($data === array('')) continue; //ignoring empty lines, same all all other
+            if ($column_count !== null) {
+                $data = array_slice($data, 0, $column_count);
+            }
             $result[] = $data;
         }
         fclose($handle);
-
-//        var_dump(file_get_contents($temp_file));
-//        print_r($result);
 
         unlink($temp_file);
 
