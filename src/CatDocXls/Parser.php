@@ -40,7 +40,7 @@ class Parser
 
         $temp_file = tempnam(sys_get_temp_dir(), 'xls2csv_py');
 
-        $cmd = $this->getComposerExecutable('caseycs/xls2csv-pypi/xls2csv.0.4.py') . " " .
+        $cmd = __DIR__ . "/../../xls2csv.0.4.py " .
             "--input {$path} " .
             "--output {$temp_file} " .
             "--sheet {$sheet} " .
