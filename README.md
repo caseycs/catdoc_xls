@@ -1,10 +1,11 @@
-#catdoc_xls
-[![Build Status](https://travis-ci.org/caseycs/catdoc_xls.png?branch=master)](https://travis-ci.org/caseycs/catdoc_xls)
+# catdoc_xls
+
+[![Build Status](https://travis-ci.org/caseycs/catdoc_xls.svg?branch=master)](https://travis-ci.org/caseycs/catdoc_xls)
 
 Excel files to PHP array convertor (xls/xlsx), wrapper on [catdoc](https://github.com/petewarden/catdoc),
 [xls2csv](https://pypi.python.org/pypi/xls2csv) (with few modifications) and [xlsx2csv](https://github.com/dilshod/xlsx2csv).
 
-##Usage example:
+## Usage example:
 
 ```php
 $Parser = new \CatDocXls\Parser;
@@ -23,7 +24,7 @@ print_r($result);
 
 See more examples in [ParserTest.php](test/CatDocXls/Test/ParserTest.php)
 
-##Known issues
+## Known issues
 
 * Empty lines are ignored - this is hardcoded in xls2csv, and `--ignoreempty` is always passed to xlsx2csv
 * Empty sheets are also ignored
