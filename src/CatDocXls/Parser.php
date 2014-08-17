@@ -3,7 +3,9 @@ namespace CatDocXls;
 
 class Parser
 {
-    private $sheet_delimiter_default = '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~';
+    const SHEET_DELIMITER_DEFAULT = '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~';
+
+    const XSL2CSV_ERROR_TAIL = 'is not OLE file or Error';
 
     public function xls($path, $sheet_delimiter = null)
     {
@@ -24,7 +26,11 @@ class Parser
             throw new Exception('xls2csv failed: ' . $cmd . ', exit code ' . $exit_code . ', output: ' . join("\n", $output));
         }
 
-        if ($output === '') {
+        if ($output === '' || !is_array($output)) {
+            throw new Exception('xls2csv output empty');
+        }
+
+        if (count($output) === 1 && strpos($output[0], self::XSL2CSV_ERROR_TAIL) === strlen($output[0]) - strlen(self::XSL2CSV_ERROR_TAIL)) {
             throw new Exception('xls2csv output empty');
         }
 
@@ -143,7 +149,7 @@ class Parser
     private function processPageDelimiter($delimiter)
     {
         if (!$delimiter) {
-            $delimiter = $this->sheet_delimiter_default;
+            $delimiter = self::SHEET_DELIMITER_DEFAULT;
         } elseif (strpos($delimiter, ' ') !== false) {
             throw new Exception('spaces in delimiter are not allowed');
         }

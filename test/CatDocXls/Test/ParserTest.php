@@ -99,4 +99,13 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $Parser = new \CatDocXls\Parser;
         $Parser->xlsx('a.xls');
     }
+
+    /**
+     * @expectedException \CatDocXls\Exception
+     */
+    public function test_parse_invalid_xls()
+    {
+        $Parser = new \CatDocXls\Parser;
+        $Parser->xls(__DIR__ . '/../../fixture/invalid.xls');
+    }
 }
