@@ -31,7 +31,7 @@ class Parser
         }
 
         if (count($output) === 1 && strpos($output[0], self::XSL2CSV_ERROR_TAIL) === strlen($output[0]) - strlen(self::XSL2CSV_ERROR_TAIL)) {
-            throw new Exception('xls2csv output empty');
+            throw new Exception('xls2csv error ' . self::XSL2CSV_ERROR_TAIL);
         }
 
         $sheets = $this->divideSheets($output, $sheet_delimiter);
