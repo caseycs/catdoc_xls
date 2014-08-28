@@ -116,16 +116,17 @@ class Parser
         $sheets = $this->divideSheets($output, $sheet_delimiter);
 
         //process lines
-        foreach ($sheets as &$sheet) {
-            if (count($sheet) === 1) {//ignoring empty sheet, same as xls2csv
-                array_shift($sheets);
+        $result = array();
+        foreach ($sheets as &$sheet_lines) {
+            if (count($sheet_lines) === 1) {//ignoring empty sheet, same as xls2csv
+                array_shift($sheet_lines);
                 continue;
             }
-            array_shift($sheet); //remove sheet title, same as xls2csv
-            $sheet = $this->csvLinesToArray($sheet);
+            array_shift($sheet_lines); //remove sheet title, same as xls2csv
+            $result[] = $this->csvLinesToArray($sheet_lines);
         }
 
-        return $sheets;
+        return $result;
     }
 
     private function divideSheets(array $lines, $delimiter)
