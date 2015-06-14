@@ -3,7 +3,9 @@ namespace CatDocXls;
 
 class Parser
 {
-    private $sheet_delimiter_default = '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~';
+    const SHEET_DELIMITER_DEFAULT = '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~';
+
+    const XSL2CSV_ERROR_TAIL = 'is not OLE file or Error';
 
     public function xls($path, $sheet_delimiter = null)
     {
@@ -24,8 +26,12 @@ class Parser
             throw new Exception('xls2csv failed: ' . $cmd . ', exit code ' . $exit_code . ', output: ' . join("\n", $output));
         }
 
-        if ($output === '') {
+        if ($output === '' || !is_array($output)) {
             throw new Exception('xls2csv output empty');
+        }
+
+        if (count($output) === 1 && strpos($output[0], self::XSL2CSV_ERROR_TAIL) === strlen($output[0]) - strlen(self::XSL2CSV_ERROR_TAIL)) {
+            throw new Exception('xls2csv error ' . self::XSL2CSV_ERROR_TAIL);
         }
 
         $sheets = $this->divideSheets($output, $sheet_delimiter);
@@ -110,16 +116,17 @@ class Parser
         $sheets = $this->divideSheets($output, $sheet_delimiter);
 
         //process lines
-        foreach ($sheets as &$sheet) {
-            if (count($sheet) === 1) {//ignoring empty sheet, same as xls2csv
-                array_shift($sheets);
+        $result = array();
+        foreach ($sheets as &$sheet_lines) {
+            if (count($sheet_lines) === 1) {//ignoring empty sheet, same as xls2csv
+                array_shift($sheet_lines);
                 continue;
             }
-            array_shift($sheet); //remove sheet title, same as xls2csv
-            $sheet = $this->csvLinesToArray($sheet);
+            array_shift($sheet_lines); //remove sheet title, same as xls2csv
+            $result[] = $this->csvLinesToArray($sheet_lines);
         }
 
-        return $sheets;
+        return $result;
     }
 
     private function divideSheets(array $lines, $delimiter)
@@ -143,7 +150,7 @@ class Parser
     private function processPageDelimiter($delimiter)
     {
         if (!$delimiter) {
-            $delimiter = $this->sheet_delimiter_default;
+            $delimiter = self::SHEET_DELIMITER_DEFAULT;
         } elseif (strpos($delimiter, ' ') !== false) {
             throw new Exception('spaces in delimiter are not allowed');
         }
