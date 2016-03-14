@@ -91,7 +91,7 @@ class Parser
 
         $sheet_delimiter = $this->processPageDelimiter($sheet_delimiter);
 
-        $cmd = $this->getComposerExecutable('dilshod/xlsx2csv/xlsx2csv.py') . " " .
+        $cmd = "xlsx2csv " .
             "--ignoreempty " .
             "--dateformat '%Y-%m-%d %H:%M:%S' " .
             "--delimiter ';' " .
@@ -156,24 +156,6 @@ class Parser
         }
 
         return $delimiter;
-    }
-
-    private function getComposerExecutable($relative_path)
-    {
-        $try_files = array(
-            __DIR__ . '/../../../../' . $relative_path,//from 3th-party projects as dependency
-            __DIR__ . '/../../vendor/' . $relative_path,//from package repo
-        );
-        foreach ($try_files as $try_file) {
-            if (is_file($try_file) && is_executable($try_file)) {
-                $executable = $try_file;
-                break;
-            }
-        }
-        if (!isset($executable)) {
-            throw new Exception("executable not found {$relative_path}");
-        }
-        return realpath($executable);
     }
 
     private function csvLinesToArray(array $csv_lines)

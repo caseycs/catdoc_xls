@@ -5,6 +5,8 @@
 Excel files to PHP array convertor (xls/xlsx), wrapper on [catdoc](https://github.com/petewarden/catdoc),
 [xls2csv](https://pypi.python.org/pypi/xls2csv) (with few modifications) and [xlsx2csv](https://github.com/dilshod/xlsx2csv).
 
+Dependencies should be already install: `xlsx2csv` can be installed via pip, `catdoc` is available by `apt-get`.
+
 ## Usage example:
 
 ```php
