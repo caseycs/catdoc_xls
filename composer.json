@@ -18,7 +18,7 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "dilshod/xlsx2csv": "dev-php-composer#4190968"
+        "dilshod/xlsx2csv": "dev-master#4190968"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*"
