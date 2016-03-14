@@ -16,7 +16,6 @@
             "email": "caseycs@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.0",
         "dilshod/xlsx2csv": "dev-php-composer#4190968"
